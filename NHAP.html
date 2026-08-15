@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Thư Gửi Linh ❤️</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920') center center / cover no-repeat fixed;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* THÔNG BÁO XOAY NGANG ĐIỆN THOẠI */
+        .rotate-notice {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            color: #fff;
+            z-index: 99999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @media screen and (orientation: portrait) and (max-width: 900px) {
+            .rotate-notice.active {
+                display: flex;
+            }
+        }
+
+        .phone-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+            animation: rotateAnim 2s infinite ease-in-out;
+        }
+
+        @keyframes rotateAnim {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* MÀN HÌNH ĐĂNG NHẬP */
+        .login-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 228, 236, 0.95), rgba(255, 240, 245, 0.95), rgba(255, 214, 229, 0.95));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 360px;
+            background: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .2);
+        }
+
+        .login-box h2 {
+            color: #c2185b;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e91e63, #c2185b);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #loginError {
+            margin-top: 10px;
+            color: #d32f2f;
+            font-size: 14px;
+        }
+
+        /* PHONG BÌ CONTAINER (ẨN KHI MỞ THƯ) */
+        .envelope-container {
+            position: relative;
+            z-index: 10;
+            display: none;
+            transform: none !important;
+            animation: none !important;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .envelope-container.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .envelope {
+            width: 320px;
+            height: 220px;
+            position: relative;
+            cursor: default;
+            transform: none !important;
+            animation: none !important;
+            transition: none !important;
+        }
+
+        .base {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #f6b0c0;
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .35);
+        }
+
+        .flap {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid #ec8ea5;
+            transform-origin: top;
+            transition: transform 0.8s ease;
+            z-index: 5;
+        }
+
+        /* TRÁI TIM NẮP THƯ */
+        .seal {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) !important;
+            animation: none !important;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            z-index: 6;
+            box-shadow: 0 0 15px rgba(255, 255, 255, .8);
+            transition: opacity 0.4s ease, transform 0.4s ease !important;
+            cursor: pointer;
+        }
+
+        .envelope.open .seal {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.5) !important;
+        }
+
+        /* LÁ THƯ TRẮNG CỐ ĐỊNH CHÍNH GIỮA MÀN HÌNH */
+        .letter-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            padding: 15px;
+        }
+
+        .letter-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .paper-sheet {
+            background: #ffffff;
+            width: 90%;
+            max-width: 460px;
+            min-height: 320px;
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), inset 0 0 50px rgba(238, 225, 201, 0.2);
+            border: 1px solid #f0e6d2;
+            text-align: center;
+            position: relative;
+            transform: none !important;
+            transition: none !important;
+            background-image: repeating-linear-gradient(white, white 27px, #e8f0fe 27px, #e8f0fe 28px);
+            line-height: 28px;
+            z-index: 102;
+            overflow: visible;
+        }
+
+        .paper-sheet h1 {
+            color: #c2185b;
+            margin-bottom: 15px;
+            font-size: 24px;
+            font-family: 'Dancing Script', 'Segoe UI', cursive;
+        }
+
+        #typingText {
+            color: #4a154b;
+            font-family: 'Dancing Script', cursive;
+            font-weight: 500;
+            font-size: 20px;
+            text-align: left;
+            display: inline-block;
+            width: 100%;
+            white-space: pre-line;
+            min-height: 130px;
+        }
+
+        #typingText::after {
+            content: "|";
+            animation: blink .8s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* TRÁI TIM BAY NẠY NHẸ VÀ TỐC ĐỘ CHẬM HƠN */
+        .bubble-heart {
+            position: absolute;
+            bottom: -5px;
+            pointer-events: none;
+            z-index: 105;
+            user-select: none;
+            filter: drop-shadow(0 4px 10px rgba(233, 30, 99, 0.35));
+            animation: slowGentleBubble 4.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes slowGentleBubble {
+            0% {
+                transform: translate(0, 0) scale(0.3);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.85;
+                transform: translate(calc(var(--dx) * 0.3), -25px) scale(0.95);
+            }
+            70% {
+                opacity: 0.95;
+                transform: translate(calc(var(--dx) * 0.85), -90px) scale(1.2);
+            }
+            90% {
+                opacity: 0.5;
+                transform: translate(var(--dx), -125px) scale(1.4);
+            }
+            100% {
+                transform: translate(calc(var(--dx) * 1.1), -140px) scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        /* NÚT TIẾP TỤC */
+        .continue-btn {
+            margin-top: 15px;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #c2185b, #ec407a);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(194, 24, 91, .35);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(15px);
+            transition: .6s ease;
+            position: relative;
+            z-index: 106;
+        }
+
+        .continue-btn.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* MÀN HÌNH CÂU HỎI */
+        .question-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: linear-gradient(135deg, rgba(255, 228, 236, 0.95), rgba(255, 240, 245, 0.95), rgba(255, 214, 229, 0.95));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.05);
+            transition: opacity .8s ease, visibility .8s ease, transform .8s ease;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .question-screen.show {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .question-content {
+            max-width: 700px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .big-heart {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+
+        .question-content h1 {
+            color: #c2185b;
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .question-content p {
+            color: #880e4f;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .answer-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        .answer-buttons button {
+            border: none;
+            border-radius: 35px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .15);
+        }
+
+        .yes-btn {
+            background: linear-gradient(135deg, #e91e63, #c2185b);
+            color: white;
+            padding: 14px 30px;
+            font-size: 18px;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            z-index: 15;
+            white-space: nowrap;
+        }
+
+        .no-btn {
+            background: white;
+            color: #c2185b;
+            padding: 14px 30px;
+            font-size: 18px;
+            position: relative;
+            transition: left .25s ease, top .25s ease;
+            z-index: 20;
+            white-space: nowrap;
+        }
+
+        /* MÀN HÌNH CẢM ƠN */
+        .thankyou-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 350;
+            background: linear-gradient(135deg, rgba(255,228,236,.98), rgba(255,240,245,.98), rgba(255,214,229,.98));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.05);
+            transition: opacity 1s ease, visibility 1s ease, transform 1s ease;
+            padding: 25px;
+            overflow: hidden;
+        }
+
+        .thankyou-screen.show {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .thankyou-content {
+            max-width: 650px;
+            width: 100%;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(194,24,91,.2);
+            backdrop-filter: blur(10px);
+            z-index: 360;
+            position: relative;
+        }
+
+        #thankTitle {
+            color: #c2185b;
+            font-family: 'Dancing Script', 'Segoe UI', cursive;
+            font-size: 42px;
+            margin-bottom: 20px;
+            min-height: 55px;
+        }
+
+        #thankMessage {
+            color: #880e4f;
+            font-family: 'Dancing Script', 'Segoe UI', cursive;
+            font-size: 26px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            min-height: 90px;
+        }
+
+        .typing-cursor::after {
+            content: "|";
+            animation: blink .8s infinite;
+            color: #c2185b;
+        }
+
+        .final-big-heart {
+            font-size: 80px;
+            margin-top: 10px;
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0.2);
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1s ease;
+        }
+
+        .final-big-heart.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* PHÁO HOA TRÁI TIM */
+        .firework-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 500;
+            animation: explode 1.2s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        /* TRÁI TIM RƠI & BAY LÊN */
+        .thank-falling-heart, .thank-rising-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 355;
+        }
+
+        .thank-falling-heart {
+            top: -50px;
+            animation: thankFall linear forwards;
+        }
+
+        @keyframes thankFall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0.9; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0.2; }
+        }
+
+        .thank-rising-heart {
+            bottom: -50px;
+            animation: thankRise linear forwards;
+        }
+
+        @keyframes thankRise {
+            0% { transform: translateY(0) scale(0.6); opacity: 0.9; }
+            100% { transform: translateY(-110vh) scale(1.3); opacity: 0.1; }
+        }
+
+        /* HIỆU ỨNG Hoa Hồng & Trái Tim NỀN */
+        .rose, .heart, .sparkle {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .rose {
+            top: -50px;
+            animation: fall linear infinite;
+            z-index: 2;
+        }
+
+        @keyframes fall {
+            from { transform: translateY(-50px) rotate(0deg); }
+            to { transform: translateY(120vh) rotate(360deg); }
+        }
+
+        .heart {
+            animation: floatUp linear infinite;
+            z-index: 2;
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(100vh) scale(.5); opacity: 1; }
+            to { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        .sparkle {
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkleMove 4s linear infinite;
+        }
+
+        @keyframes sparkleMove {
+            from { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; }
+            to { opacity: 0; transform: translateY(-200px); }
+        }
+
+        @media (max-width: 600px) {
+            .envelope { width: 280px; height: 190px; }
+            .flap { border-left: 140px solid transparent; border-right: 140px solid transparent; border-top: 105px solid #ec8ea5; }
+            .paper-sheet { padding: 20px 15px; }
+            .paper-sheet h1, .question-content h1 { font-size: 22px; }
+            #typingText { font-size: 14px; line-height: 24px; }
+            .question-content p { font-size: 15px; }
+            .big-heart { font-size: 55px; }
+            .thankyou-content { padding: 30px 18px; }
+            #thankTitle { font-size: 30px; }
+            #thankMessage { font-size: 20px; }
+            .final-big-heart { font-size: 65px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- THÔNG BÁO XOAY NGANG -->
+    <div id="rotateNotice" class="rotate-notice">
+        <div class="phone-icon">📱</div>
+        <h3>Vui lòng xoay ngang điện thoại</h3>
+        <p style="font-size: 14px; color: #ccc; margin-top: 8px;">Để có trải nghiệm xem thư tốt nhất nhé ❤️</p>
+    </div>
+
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h2>💖 Xác Nhận Thông Tin 💖</h2>
+            <input type="text" id="userName" placeholder="Nhập tên">
+            <input type="date" id="birthDate">
+            <button onclick="checkLogin()">Xác nhận ❤️</button>
+            <p id="loginError"></p>
+        </div>
+    </div>
+
+    <!-- NHẠC NỀN -->
+    <audio id="bgMusic" loop>
+        <source src="dia_chi.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- PHONG BÌ CONTAINER -->
+    <div class="envelope-container" id="envelopeContainer">
+        <div class="envelope" id="envelope">
+            <div class="base"></div>
+            <div class="flap"></div>
+            <div class="seal" id="heartSeal">❤️</div>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH LÁ THƯ TRẮNG -->
+    <div class="letter-modal" id="letterModal">
+        <div class="paper-sheet" id="paperSheet">
+            <h1>Gửi đến Linh ❤️</h1>
+            <p id="typingText"></p>
+            <button class="continue-btn" id="continueBtn">Tiếp tục ❤️</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH CÂU HỎI -->
+    <div class="question-screen" id="questionScreen">
+        <div class="question-content">
+            <div class="big-heart">❤️</div>
+            <h1>Em có thương tôi không?</h1>
+            <p>Hãy trả lời thật lòng nhé... 🥺</p>
+            <div class="answer-buttons">
+                <button id="yesBtn" class="yes-btn">Đồng ý 💗</button>
+                <button id="noBtn" class="no-btn">Không 💔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH CẢM ƠN -->
+    <div class="thankyou-screen" id="thankyouScreen">
+        <div class="thankyou-content">
+            <h1 id="thankTitle"></h1>
+            <p id="thankMessage"></p>
+            <div class="final-big-heart" id="finalHeart">❤️</div>
+        </div>
+    </div>
+
+    <script>
+        function requestFullScreen() {
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) docEl.requestFullscreen().catch(() => {});
+            else if (docEl.mozRequestFullScreen) docEl.mozRequestFullScreen().catch(() => {});
+            else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen().catch(() => {});
+            else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen().catch(() => {});
+        }
+
+        function checkLogin() {
+            const name = document.getElementById("userName").value.trim();
+            const date = document.getElementById("birthDate").value;
+            const correctName = "Linh";
+            const correctDate = "2006-07-07";
+
+            if (name.toLowerCase() === correctName.toLowerCase() && date === correctDate) {
+                requestFullScreen();
+                document.getElementById("loginScreen").style.display = "none";
+                document.getElementById("envelopeContainer").style.display = "block";
+                document.getElementById("rotateNotice").classList.add("active");
+            } else {
+                document.getElementById("loginError").innerHTML = "❌ Sai tên hoặc ngày sinh";
+            }
+        }
+
+        const envelopeContainer = document.getElementById("envelopeContainer");
+        const envelope = document.getElementById("envelope");
+        const heartSeal = document.getElementById("heartSeal");
+        const letterModal = document.getElementById("letterModal");
+        const paperSheet = document.getElementById("paperSheet");
+        const music = document.getElementById("bgMusic");
+        const typingText = document.getElementById("typingText");
+        const continueBtn = document.getElementById("continueBtn");
+        const questionScreen = document.getElementById("questionScreen");
+        const yesBtn = document.getElementById("yesBtn");
+        const noBtn = document.getElementById("noBtn");
+        const thankyouScreen = document.getElementById("thankyouScreen");
+
+        const message = `Cảm ơn em đã đến bên anh.
+Chúc em luôn vui vẻ, hạnh phúc và đạt được mọi điều mình mong muốn.
+Dù tương lai thế nào, anh vẫn mong em luôn mỉm cười và sống thật hạnh phúc.
+Yêu em rất nhiều ❤️`;
+
+        let heartInterval = null;
+        let bubbleInterval = null;
+
+        /* TẠO TRÁI TIM CHUYỂN ĐỘNG NHẸ NHÀNG, CHẬM VÀ TRÔI NỔI TỰ NHIÊN */
+        function startBottomBubbleHearts() {
+            const bubbleHearts = ["💖", "💗", "💕", "❤️", "💞"];
+            bubbleInterval = setInterval(() => {
+                const bubble = document.createElement("div");
+                bubble.className = "bubble-heart";
+                bubble.innerHTML = bubbleHearts[Math.floor(Math.random() * bubbleHearts.length)];
+                
+                // Tập trung xuất hiện ở hai góc dưới thư (5%-25% hoặc 75%-95%)
+                const isLeftCorner = Math.random() < 0.5;
+                const randomLeft = isLeftCorner 
+                    ? (5 + Math.random() * 20) 
+                    : (75 + Math.random() * 20);
+                
+                bubble.style.left = randomLeft + "%";
+                
+                // Kích thước nhẹ nhàng linh hoạt từ 26px đến 38px
+                bubble.style.fontSize = (26 + Math.random() * 12) + "px";
+                
+                // Quỹ đạo lệch nhẹ ra phía bên ngoài góc thư
+                const dx = (isLeftCorner ? -1 : 1) * (10 + Math.random() * 35) + "px";
+                bubble.style.setProperty('--dx', dx);
+                
+                paperSheet.appendChild(bubble);
+                
+                // Xóa phần tử sau khi hoàn tất chu kỳ animation 4.8 giây
+                setTimeout(() => bubble.remove(), 4800);
+            }, 900);
+        }
+
+        function startFallingHearts() {
+            const heartIcons = ["❤️", "💖", "💕", "💗", "💓"];
+            heartInterval = setInterval(() => {
+                const fallingHeart = document.createElement("div");
+                fallingHeart.className = "falling-heart";
+                fallingHeart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                fallingHeart.style.left = Math.random() * 100 + "vw";
+                fallingHeart.style.fontSize = (16 + Math.random() * 20) + "px";
+                fallingHeart.style.animationDuration = (3 + Math.random() * 3) + "s";
+                document.body.appendChild(fallingHeart);
+                setTimeout(() => fallingHeart.remove(), 6000);
+            }, 300);
+        }
+
+        function typeWriter(text, element, speed = 60, callback) {
+            let i = 0;
+            element.innerHTML = "";
+            element.classList.add("typing-cursor");
+
+            function typing() {
+                if (i < text.length) {
+                    if (text.charAt(i) === "\n") {
+                        element.innerHTML += "<br>";
+                    } else {
+                        element.innerHTML += text.charAt(i);
+                    }
+                    i++;
+                    setTimeout(typing, speed);
+                } else {
+                    element.classList.remove("typing-cursor");
+                    if (callback) callback();
+                }
+            }
+            typing();
+        }
+
+        let isOpened = false;
+
+        function openLetter(event) {
+            if (event) event.stopPropagation();
+            if (isOpened) return;
+            isOpened = true;
+
+            envelope.classList.add("open");
+            document.querySelector(".flap").style.transform = "rotateX(180deg)";
+            music.play().catch(() => {});
+
+            setTimeout(() => {
+                // ẨN PHONG BÌ MÀU HỒNG
+                envelopeContainer.classList.add("hide");
+
+                // HIỆN BỨC THƯ TRẮNG CỐ ĐỊNH CHÍNH GIỮA MÀN HÌNH
+                letterModal.classList.add("show");
+                
+                // KÍCH HOẠT BONG BÓNG TRÁI TIM BAY CHẬM VÀ NHẸ NHÀNG
+                startBottomBubbleHearts();
+
+                typeWriter(message, typingText, 60, () => {
+                    continueBtn.classList.add("show");
+                });
+                startFallingHearts();
+            }, 400);
+        }
+
+        heartSeal.addEventListener("click", openLetter);
+
+        continueBtn.addEventListener("click", () => {
+            letterModal.classList.remove("show");
+            if (heartInterval) clearInterval(heartInterval);
+            if (bubbleInterval) clearInterval(bubbleInterval);
+            setTimeout(() => {
+                questionScreen.classList.add("show");
+            }, 600);
+        });
+
+        function createHeartFirework(x, y) {
+            const hearts = ["💖", "💗", "💕", "❤️", "✨"];
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement("div");
+                particle.className = "firework-particle";
+                particle.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                particle.style.left = x + "px";
+                particle.style.top = y + "px";
+                particle.style.fontSize = (16 + Math.random() * 20) + "px";
+
+                const angle = (Math.PI * 2 * i) / 40;
+                const velocity = 80 + Math.random() * 160;
+                const dx = Math.cos(angle) * velocity + "px";
+                const dy = Math.sin(angle) * velocity + "px";
+
+                particle.style.setProperty('--dx', dx);
+                particle.style.setProperty('--dy', dy);
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1200);
+            }
+        }
+
+        yesBtn.addEventListener("click", (e) => {
+            const rect = yesBtn.getBoundingClientRect();
+            createHeartFirework(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+            questionScreen.classList.remove("show");
+
+            setTimeout(() => {
+                thankyouScreen.classList.add("show");
+                startThankYouScreenEffects();
+            }, 600);
+        });
+
+        function startThankYouScreenEffects() {
+            setInterval(() => {
+                const heart = document.createElement("div");
+                heart.className = "thank-falling-heart";
+                heart.innerHTML = ["💕", "💗", "❤️", "🌸"][Math.floor(Math.random() * 4)];
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.fontSize = (18 + Math.random() * 24) + "px";
+                heart.style.animationDuration = (6 + Math.random() * 4) + "s";
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 10000);
+            }, 500);
+
+            setInterval(() => {
+                const heart = document.createElement("div");
+                heart.className = "thank-rising-heart";
+                heart.innerHTML = ["💖", "💓", "✨", "💞"][Math.floor(Math.random() * 4)];
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.fontSize = (16 + Math.random() * 26) + "px";
+                heart.style.animationDuration = (7 + Math.random() * 5) + "s";
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 12000);
+            }, 600);
+
+            const titleText = "Cảm ơn em đã cho anh biết ❤️";
+            const messageText = "Anh thật sự rất vui vì câu trả lời của em.\nChúc chúng ta sẽ có thật nhiều kỷ niệm đẹp bên nhau 💕";
+
+            typeWriter(titleText, document.getElementById("thankTitle"), 70, () => {
+                typeWriter(messageText, document.getElementById("thankMessage"), 50, () => {
+                    document.getElementById("finalHeart").classList.add("show");
+                });
+            });
+        }
+
+        /* NÚT "KHÔNG" CHẠY TRỐN VÀ NÚT "ĐỒNG Ý" TĂNG KÍCH THƯỚC */
+        let yesScale = 1;
+
+        function runAway() {
+            const padding = 20;
+            const yesRect = yesBtn.getBoundingClientRect();
+            let randomX, randomY, safePosition = false;
+
+            for (let i = 0; i < 50; i++) {
+                const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+                const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+                randomX = padding + Math.random() * Math.max(0, maxX - padding);
+                randomY = padding + Math.random() * Math.max(0, maxY - padding);
+
+                const noLeft = randomX;
+                const noRight = randomX + noBtn.offsetWidth;
+                const noTop = randomY;
+                const noBottom = randomY + noBtn.offsetHeight;
+
+                const overlapsYes =
+                    noRight > yesRect.left - 30 &&
+                    noLeft < yesRect.right + 30 &&
+                    noBottom > yesRect.top - 30 &&
+                    noTop < yesRect.bottom + 30;
+
+                if (!overlapsYes) {
+                    safePosition = true;
+                    break;
+                }
+            }
+
+            if (!safePosition) {
+                randomX = 20;
+                randomY = 20;
+            }
+
+            noBtn.style.position = "fixed";
+            noBtn.style.left = randomX + "px";
+            noBtn.style.top = randomY + "px";
+            noBtn.innerHTML = "Không 💔";
+
+            yesScale += 0.35;
+            yesBtn.style.transform = `scale(${yesScale})`;
+
+            const glowSize = 10 + yesScale * 5;
+            yesBtn.style.boxShadow = `0 0 ${glowSize}px rgba(233, 30, 99, 0.9), 0 0 ${glowSize * 2}px rgba(233, 30, 99, 0.6)`;
+        }
+
+        noBtn.addEventListener("mouseenter", runAway);
+        noBtn.addEventListener("touchstart", (event) => {
+            event.preventDefault();
+            runAway();
+        }, { passive: false });
+        noBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            runAway();
+        });
+
+        /* TẠO NỀN BAN ĐẦU */
+        for (let i = 0; i < 30; i++) {
+            const rose = document.createElement("div");
+            rose.className = "rose";
+            rose.innerHTML = "🌹";
+            rose.style.left = Math.random() * 100 + "vw";
+            rose.style.fontSize = (20 + Math.random() * 25) + "px";
+            rose.style.animationDuration = (8 + Math.random() * 8) + "s";
+            rose.style.animationDelay = Math.random() * 5 + "s";
+            document.body.appendChild(rose);
+        }
+
+        for (let i = 0; i < 35; i++) {
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = (12 + Math.random() * 25) + "px";
+            heart.style.animationDuration = (7 + Math.random() * 8) + "s";
+            heart.style.animationDelay = Math.random() * 5 + "s";
+            document.body.appendChild(heart);
+        }
+
+        for (let i = 0; i < 80; i++) {
+            const sparkle = document.createElement("div");
+            sparkle.className = "sparkle";
+            sparkle.style.left = Math.random() * 100 + "vw";
+            sparkle.style.top = Math.random() * 100 + "vh";
+            sparkle.style.animationDelay = Math.random() * 4 + "s";
+            document.body.appendChild(sparkle);
+        }
+    </script>
+</body>
+
+</html>
